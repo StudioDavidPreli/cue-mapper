@@ -203,8 +203,14 @@ main { padding: 28px; }
   height: 100%;
   background: var(--accent);
   width: 0%;
-  transition: width 0.1s linear;
+  transition: width 0.15s ease-out;
   box-shadow: 0 0 8px var(--accent);
+  animation: pulse-glow 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 6px var(--accent); }
+  50%       { box-shadow: 0 0 16px var(--accent), 0 0 30px rgba(200,255,87,0.3); }
 }
 
 .progress-pct {
@@ -509,6 +515,10 @@ canvas { display: block; width: 100%; cursor: crosshair; }
 </head>
 <body>
 
+<!-- Debug bar — visible during testing, remove before final deploy -->
+<div id="debug-bar" style="background:#1a0a00; border-bottom:1px solid #ff6b35; padding:6px 28px; font-size:10px; font-family:monospace; color:#ff6b35; display:none; word-break:break-all; line-height:1.6;">
+  <strong>DEBUG</strong> &mdash; <span id="debug-msg">ready</span>
+</div>
 <header class="header">
   <div class="logo">
     <h1>Cue Mapper</h1>
@@ -518,10 +528,9 @@ canvas { display: block; width: 100%; cursor: crosshair; }
 </header>
 
 <main>
-  <div id="error-msg"></div>
-
   <!-- ── Upload State ── -->
   <div id="upload-zone" role="button" tabindex="0" aria-label="Upload audio file">
+    <div id="error-msg" style="display:none; margin-bottom:20px; padding:10px 14px; background:rgba(255,107,53,0.1); border:1px solid rgba(255,107,53,0.4); border-radius:3px; color:#ff6b35; font-size:11px; text-align:left;"></div>
     <div class="upload-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"/>
@@ -624,6 +633,16 @@ canvas { display: block; width: 100%; cursor: crosshair; }
 
 <script>
 // ─────────────────────────────────────────────
+// Debug helper — shows status bar with messages
+// ─────────────────────────────────────────────
+function dbg(msg) {
+  console.log('[CueMapper]', msg);
+  const bar = document.getElementById('debug-bar');
+  const txt = document.getElementById('debug-msg');
+  if (bar && txt) { bar.style.display = 'block'; txt.textContent = msg; }
+}
+
+// ─────────────────────────────────────────────
 // FFT — Cooley-Tukey radix-2 in-place
 // ─────────────────────────────────────────────
 function fft(re, im) {
@@ -689,8 +708,18 @@ function percentile(arr, p) {
 // Core Analysis
 // ─────────────────────────────────────────────
 async function analyze(arrayBuffer, onProgress) {
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+  // AudioContext must be created fresh per call, inside async flow triggered by user gesture
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) throw new Error('Web Audio API not supported in this browser.');
+  const audioCtx = new AudioContextClass();
+
+  let audioBuffer;
+  try {
+    audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+  } catch(decodeErr) {
+    audioCtx.close();
+    throw new Error('Audio decode failed: ' + decodeErr.message + '. Try MP3 or WAV.');
+  }
   audioCtx.close();
 
   // Mix to mono
@@ -1282,9 +1311,12 @@ function setProgress(pct) {
 
 function showError(msg) {
   const el = document.getElementById('error-msg');
-  el.textContent = msg;
+  el.textContent = '⚠ ' + msg;
   el.style.display = 'block';
-  setTimeout(()=>{ el.style.display='none'; }, 6000);
+  dbg('ERROR: ' + msg);
+}
+function clearError() {
+  document.getElementById('error-msg').style.display = 'none';
 }
 
 function resetTool() {
@@ -1293,12 +1325,19 @@ function resetTool() {
 }
 
 async function handleFile(file) {
-  if (!file || !file.type.match(/audio|video\/mp4/)) {
-    showError('Please upload an audio file (MP3, WAV, FLAC, OGG, AAC, MP4).');
+  if (!file) return;
+
+  // file.type is often empty string on Windows drag-drop — check extension as fallback
+  const ext = file.name.split('.').pop().toLowerCase();
+  const validExts = ['mp3','wav','flac','ogg','aac','mp4','m4a','aiff','aif','opus','weba'];
+  const validType = (file.type && file.type.match(/audio|video\/mp4/)) || validExts.includes(ext);
+
+  if (!validType) {
+    showError(`"${file.name}" doesn't look like an audio file. Try MP3, WAV, FLAC, OGG, or AAC.`);
     return;
   }
-  if (file.size > 150 * 1024 * 1024) {
-    showError('File is too large (max 150MB). Try a shorter clip.');
+  if (file.size > 200 * 1024 * 1024) {
+    showError('File is too large (max 200MB). Try a shorter clip.');
     return;
   }
 
@@ -1307,9 +1346,20 @@ async function handleFile(file) {
   showProgress();
   setProgress(0);
 
+  clearError();
+  dbg('File accepted: ' + file.name + ' (' + (file.size/1024).toFixed(0) + 'KB, type="' + file.type + '")');
+
+  // Give browser a frame to repaint before blocking work starts
+  await new Promise(r => requestAnimationFrame(() => setTimeout(r, 80)));
+
   try {
+    setProgress(2);
+    dbg('Reading file buffer...');
     const buffer = await file.arrayBuffer();
-    RESULT = await analyze(buffer, pct => setProgress(pct));
+    dbg('Buffer read (' + buffer.byteLength + ' bytes). Starting audio decode...');
+    setProgress(5);
+    RESULT = await analyze(buffer, pct => { setProgress(pct); if (Math.round(pct) % 20 === 0) dbg('Analysis ' + Math.round(pct) + '%...'); });
+    dbg('Analysis complete. Rendering results...');
     showResults();
     renderResults();
     // Report height to Cargo iframe parent
@@ -1317,8 +1367,9 @@ async function handleFile(file) {
       window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
     }, 200);
   } catch (err) {
-    console.error(err);
-    showError('Could not decode this file. Try a different format.');
+    console.error('[CueMapper]', err);
+    const msg = err && err.message ? err.message : String(err);
+    showError('Error: ' + msg);
     showUpload();
   }
 }
@@ -1332,14 +1383,20 @@ const input = document.getElementById('file-input');
 zone.addEventListener('click', () => input.click());
 zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') input.click(); });
 
-input.addEventListener('change', () => { if (input.files[0]) handleFile(input.files[0]); });
+input.addEventListener('change', () => { 
+  const f = input.files[0];
+  dbg('File selected via input: ' + (f ? f.name : 'none'));
+  if (f) handleFile(f); 
+});
 
-zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); dbg('Drag over zone...'); });
 zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
 zone.addEventListener('drop', e => {
   e.preventDefault();
   zone.classList.remove('drag-over');
-  handleFile(e.dataTransfer.files[0]);
+  const f = e.dataTransfer.files[0];
+  dbg('File dropped: ' + (f ? f.name : 'none'));
+  handleFile(f);
 });
 
 // Resize redraws
@@ -1353,6 +1410,9 @@ window.addEventListener('resize', () => {
 
 // Initial Cargo height
 window.parent.postMessage({ type: 'resize', height: 360 }, '*');
+
+// Startup check
+dbg('CueMapper ready. Web Audio API: ' + !!(window.AudioContext || window.webkitAudioContext) + ' | FileReader: ' + !!window.FileReader);
 </script>
 </body>
 </html>
