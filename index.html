@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Cue Mapper</title>
+<title>Cue Mapper — Studio David Preli</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      #0b0b0c;
-  --bg2:     #111113;
-  --panel:   #161618;
-  --panel2:  #1c1c1f;
-  --border:  #272729;
-  --border2: #333336;
-  --accent:  #c8ff57;
-  --accent2: #ff6b35;
-  --accent3: #5bc4ff;
-  --text:    #e2e2da;
-  --muted:   #64646a;
-  --muted2:  #9a9aa0;
-  --radius:  3px;
+  --bg:      #141414;
+  --bg2:     #1a1a1a;
+  --panel:   #1e1e1e;
+  --panel2:  #262626;
+  --border:  #2e2e2e;
+  --border2: #3d3d3d;
+  --accent:  #76c17d;
+  --accent2: #b9b0ff;
+  --accent3: #e8b86d;
+  --text:    #e1e1e1;
+  --muted:   #888888;
+  --muted2:  #aaaaaa;
+  --radius:  2px;
 }
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +30,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Space Mono', monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
   line-height: 1.6;
   min-height: 100vh;
@@ -99,13 +99,13 @@ main { padding: 28px; }
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(200,255,87,0.04) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(118,193,125,0.04) 0%, transparent 70%);
   pointer-events: none;
 }
 
 #upload-zone.drag-over {
   border-color: var(--accent);
-  background: rgba(200,255,87,0.04);
+  background: rgba(118,193,125,0.04);
 }
 
 #upload-zone:hover { border-color: var(--accent); }
@@ -162,7 +162,7 @@ main { padding: 28px; }
 /* ── Progress ── */
 #progress-zone {
   display: none;
-  padding: 64px 40px;
+  padding: 48px 40px 40px;
   text-align: center;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -174,12 +174,98 @@ main { padding: 28px; }
   font-style: italic;
   font-size: 20px;
   color: var(--accent);
-  margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 500px;
-  margin: 0 auto 8px;
+  margin: 0 auto 28px;
+}
+
+.staff-wrap {
+  position: relative;
+  width: 320px;
+  height: 80px;
+  margin: 0 auto 4px;
+}
+
+.staff-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: var(--border2);
+}
+
+.note {
+  position: absolute;
+  left: 0;
+  animation: note-hop 2.4s cubic-bezier(0.4,0,0.6,1) infinite;
+}
+
+.notehead {
+  width: 16px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  transform: rotate(-15deg);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.stem {
+  width: 2px;
+  height: 30px;
+  background: var(--accent);
+  position: absolute;
+  bottom: 9px;
+  left: 13px;
+}
+
+.ghost-note {
+  position: absolute;
+  bottom: 34px;
+}
+
+.ghost-head {
+  width: 12px;
+  height: 9px;
+  border: 1.5px solid var(--border2);
+  border-radius: 50%;
+  transform: rotate(-15deg);
+}
+
+.ghost-stem {
+  width: 1.5px;
+  height: 22px;
+  background: var(--border2);
+  position: absolute;
+  bottom: 7px;
+  left: 10px;
+}
+
+.ghost-trail {
+  position: absolute;
+  bottom: 34px;
+  display: flex;
+  gap: 48px;
+  left: 0;
+}
+
+@keyframes note-hop {
+  0%   { transform: translateX(0px)   translateY(0px);   }
+  8%   { transform: translateX(24px)  translateY(-28px); }
+  16%  { transform: translateX(48px)  translateY(0px);   }
+  24%  { transform: translateX(72px)  translateY(-22px); }
+  32%  { transform: translateX(96px)  translateY(0px);   }
+  40%  { transform: translateX(120px) translateY(-28px); }
+  48%  { transform: translateX(144px) translateY(0px);   }
+  56%  { transform: translateX(168px) translateY(-22px); }
+  64%  { transform: translateX(192px) translateY(0px);   }
+  72%  { transform: translateX(216px) translateY(-28px); }
+  80%  { transform: translateX(240px) translateY(0px);   }
+  88%  { transform: translateX(264px) translateY(-22px); }
+  96%  { transform: translateX(288px) translateY(0px);   }
+  100% { transform: translateX(288px) translateY(0px);   }
 }
 
 .progress-label {
@@ -187,14 +273,32 @@ main { padding: 28px; }
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  animation: label-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes label-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1;   }
+}
+
+.progress-dots span {
+  display: inline-block;
+  animation: dot-blink 1.2s ease-in-out infinite;
+}
+.progress-dots span:nth-child(2) { animation-delay: 0.2s; }
+.progress-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dot-blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40%           { opacity: 1;   }
 }
 
 .progress-bar-wrap {
   width: 280px;
   height: 2px;
   background: var(--border2);
-  margin: 0 auto 16px;
+  margin: 0 auto 12px;
   border-radius: 1px;
   overflow: hidden;
 }
@@ -204,13 +308,12 @@ main { padding: 28px; }
   background: var(--accent);
   width: 0%;
   transition: width 0.15s ease-out;
-  box-shadow: 0 0 8px var(--accent);
   animation: pulse-glow 1.2s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 6px var(--accent); }
-  50%       { box-shadow: 0 0 16px var(--accent), 0 0 30px rgba(200,255,87,0.3); }
+  50%       { box-shadow: 0 0 16px var(--accent), 0 0 30px rgba(118,193,125,0.3); }
 }
 
 .progress-pct {
@@ -281,7 +384,7 @@ main { padding: 28px; }
   border: 1px solid var(--border2);
   border-radius: var(--radius);
   color: var(--text);
-  font-family: 'Space Mono', monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -294,18 +397,18 @@ main { padding: 28px; }
 
 .btn.primary {
   background: var(--accent);
-  color: #0b0b0c;
+  color: #141414;
   border-color: var(--accent);
   font-weight: 700;
 }
 
-.btn.primary:hover { background: #d8ff6a; border-color: #d8ff6a; color: #0b0b0c; }
+.btn.primary:hover { background: #d8ff6a; border-color: #d8ff6a; color: #141414; }
 
 .btn-reset {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--muted);
-  font-family: 'Space Mono', monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -358,7 +461,7 @@ main { padding: 28px; }
 .ldot.t1 { background: var(--accent); box-shadow: 0 0 5px var(--accent); }
 .ldot.t2 { background: var(--accent2); }
 .ldot.t3 { background: var(--accent3); opacity: 0.5; }
-.lline { width: 18px; height: 1px; background: rgba(200,255,87,0.4); }
+.lline { width: 18px; height: 1px; background: rgba(118,193,125,0.4); }
 
 /* ── Canvas panels ── */
 .canvas-panel {
@@ -504,8 +607,8 @@ canvas { display: block; width: 100%; cursor: crosshair; }
 #error-msg {
   display: none;
   padding: 12px 16px;
-  background: rgba(255,107,53,0.08);
-  border: 1px solid rgba(255,107,53,0.3);
+  background: rgba(185,176,255,0.08);
+  border: 1px solid rgba(185,176,255,0.3);
   border-radius: var(--radius);
   color: var(--accent2);
   font-size: 11px;
@@ -515,10 +618,6 @@ canvas { display: block; width: 100%; cursor: crosshair; }
 </head>
 <body>
 
-<!-- Debug bar — visible during testing, remove before final deploy -->
-<div id="debug-bar" style="background:#1a0a00; border-bottom:1px solid #ff6b35; padding:6px 28px; font-size:10px; font-family:monospace; color:#ff6b35; display:none; word-break:break-all; line-height:1.6;">
-  <strong>DEBUG</strong> &mdash; <span id="debug-msg">ready</span>
-</div>
 <header class="header">
   <div class="logo">
     <h1>Cue Mapper</h1>
@@ -530,7 +629,7 @@ canvas { display: block; width: 100%; cursor: crosshair; }
 <main>
   <!-- ── Upload State ── -->
   <div id="upload-zone" role="button" tabindex="0" aria-label="Upload audio file">
-    <div id="error-msg" style="display:none; margin-bottom:20px; padding:10px 14px; background:rgba(255,107,53,0.1); border:1px solid rgba(255,107,53,0.4); border-radius:3px; color:#ff6b35; font-size:11px; text-align:left;"></div>
+    <div id="error-msg" style="display:none; margin-bottom:20px; padding:10px 14px; background:rgba(185,176,255,0.1); border:1px solid rgba(185,176,255,0.4); border-radius:3px; color:#b9b0ff; font-size:11px; text-align:left;"></div>
     <div class="upload-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"/>
@@ -552,7 +651,25 @@ canvas { display: block; width: 100%; cursor: crosshair; }
   <!-- ── Progress State ── -->
   <div id="progress-zone">
     <div class="progress-filename" id="prog-filename">—</div>
-    <div class="progress-label">Analyzing audio</div>
+    <div class="staff-wrap">
+      <div class="staff-line" style="bottom:20px"></div>
+      <div class="staff-line" style="bottom:30px"></div>
+      <div class="staff-line" style="bottom:40px"></div>
+      <div class="staff-line" style="bottom:50px"></div>
+      <div class="staff-line" style="bottom:60px"></div>
+      <div class="ghost-trail">
+        <div class="ghost-note"><div class="ghost-stem"></div><div class="ghost-head"></div></div>
+        <div class="ghost-note"><div class="ghost-stem"></div><div class="ghost-head"></div></div>
+        <div class="ghost-note"><div class="ghost-stem"></div><div class="ghost-head"></div></div>
+        <div class="ghost-note"><div class="ghost-stem"></div><div class="ghost-head"></div></div>
+        <div class="ghost-note"><div class="ghost-stem"></div><div class="ghost-head"></div></div>
+      </div>
+      <div class="note" style="bottom:28px">
+        <div class="stem"></div>
+        <div class="notehead"></div>
+      </div>
+    </div>
+    <div class="progress-label">analysing<span class="progress-dots"><span>.</span><span>.</span><span>.</span></span></div>
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" id="prog-bar"></div>
     </div>
@@ -632,16 +749,6 @@ canvas { display: block; width: 100%; cursor: crosshair; }
 <div id="tooltip"></div>
 
 <script>
-// ─────────────────────────────────────────────
-// Debug helper — shows status bar with messages
-// ─────────────────────────────────────────────
-function dbg(msg) {
-  console.log('[CueMapper]', msg);
-  const bar = document.getElementById('debug-bar');
-  const txt = document.getElementById('debug-msg');
-  if (bar && txt) { bar.style.display = 'block'; txt.textContent = msg; }
-}
-
 // ─────────────────────────────────────────────
 // FFT — Cooley-Tukey radix-2 in-place
 // ─────────────────────────────────────────────
@@ -886,7 +993,8 @@ let FILENAME = '';
 const DPR = window.devicePixelRatio || 1;
 
 function setupCanvas(canvas, h) {
-  const W = canvas.parentElement.clientWidth - 32;
+  let W = (canvas.parentElement.clientWidth || canvas.parentElement.offsetWidth || 800) - 32;
+  if (W <= 0) W = 800; // fallback if layout hasn't flushed yet
   canvas.width  = W * DPR;
   canvas.height = h * DPR;
   canvas.style.height = h + 'px';
@@ -919,16 +1027,16 @@ function drawWaveform() {
   segments.forEach((st, i) => {
     const end = segments[i+1] || dur;
     if (i % 2 === 0) {
-      ctx.fillStyle = 'rgba(200,255,87,0.025)';
+      ctx.fillStyle = 'rgba(118,193,125,0.025)';
       ctx.fillRect((st/dur)*W, 0, ((end-st)/dur)*W, H);
     }
   });
 
   // Waveform fill
   const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, 'rgba(200,255,87,0.6)');
-  grad.addColorStop(0.5, 'rgba(200,255,87,0.8)');
-  grad.addColorStop(1, 'rgba(200,255,87,0.6)');
+  grad.addColorStop(0, 'rgba(118,193,125,0.6)');
+  grad.addColorStop(0.5, 'rgba(118,193,125,0.8)');
+  grad.addColorStop(1, 'rgba(118,193,125,0.6)');
 
   ctx.beginPath();
   for (let i = 0; i < N; i++) {
@@ -949,7 +1057,7 @@ function drawWaveform() {
   // Section boundary lines
   segments.slice(1).forEach(t => {
     const x = (t/dur)*W;
-    ctx.strokeStyle = 'rgba(200,255,87,0.4)';
+    ctx.strokeStyle = 'rgba(118,193,125,0.4)';
     ctx.lineWidth = 1;
     ctx.setLineDash([3,3]);
     ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
@@ -978,8 +1086,8 @@ function drawCueMap() {
     const x = (st/dur)*W, w = ((end-st)/dur)*W;
     ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.018)' : 'transparent';
     ctx.fillRect(x, 0, w, H);
-    ctx.fillStyle = 'rgba(200,255,87,0.2)';
-    ctx.font = `8px 'Space Mono', monospace`;
+    ctx.fillStyle = 'rgba(118,193,125,0.2)';
+    ctx.font = `8px 'IBM Plex Mono', monospace`;
     ctx.textAlign = 'center';
     ctx.fillText(`§${i+1}`, x + w/2, 12);
   });
@@ -987,7 +1095,7 @@ function drawCueMap() {
   // Section boundary lines
   segments.slice(1).forEach(t => {
     const x = (t/dur)*W;
-    ctx.strokeStyle = 'rgba(200,255,87,0.3)';
+    ctx.strokeStyle = 'rgba(118,193,125,0.3)';
     ctx.lineWidth = 1;
     ctx.setLineDash([4,4]);
     ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
@@ -1003,7 +1111,7 @@ function drawCueMap() {
   tier3.forEach(([t, s]) => {
     const x = (t/dur)*W;
     const h = 22 * (s/MAX_STRENGTH);
-    ctx.fillStyle = 'rgba(91,196,255,0.22)';
+    ctx.fillStyle = 'rgba(232,184,109,0.22)';
     ctx.fillRect(x-1, H-h, 2, h);
   });
 
@@ -1011,7 +1119,7 @@ function drawCueMap() {
   tier2.forEach(([t, s]) => {
     const x = (t/dur)*W;
     const h = 70 * (s/MAX_STRENGTH);
-    ctx.fillStyle = 'rgba(255,107,53,0.55)';
+    ctx.fillStyle = 'rgba(185,176,255,0.55)';
     ctx.fillRect(x-1, H/2-h/2, 2, h);
   });
 
@@ -1023,17 +1131,17 @@ function drawCueMap() {
     const y0 = H/2 - h/2, y1 = H/2 + h/2;
 
     const grd = ctx.createLinearGradient(0, y0, 0, y1);
-    grd.addColorStop(0,   'rgba(200,255,87,0)');
-    grd.addColorStop(0.5, 'rgba(200,255,87,0.85)');
-    grd.addColorStop(1,   'rgba(200,255,87,0)');
+    grd.addColorStop(0,   'rgba(118,193,125,0)');
+    grd.addColorStop(0.5, 'rgba(118,193,125,0.85)');
+    grd.addColorStop(1,   'rgba(118,193,125,0)');
     ctx.fillStyle = grd;
     ctx.fillRect(x-4, y0, 8, h);
-    ctx.fillStyle = '#c8ff57';
+    ctx.fillStyle = '#76c17d';
     ctx.fillRect(x-1, y0, 2, h);
 
     // Caps
     ctx.beginPath(); ctx.arc(x, y0, 3, 0, Math.PI*2);
-    ctx.fillStyle = '#c8ff57'; ctx.fill();
+    ctx.fillStyle = '#76c17d'; ctx.fill();
     ctx.beginPath(); ctx.arc(x, y1, 3, 0, Math.PI*2); ctx.fill();
   });
 
@@ -1071,9 +1179,9 @@ function buildSections() {
       <div class="sec-time">${fmtTime(st)}</div>
       <div class="sec-dur">${d.toFixed(1)}s</div>
       <div class="sec-stats">
-        <div class="sec-stat"><div class="sec-dot" style="background:#c8ff57"></div> ${t1}</div>
-        <div class="sec-stat"><div class="sec-dot" style="background:#ff6b35"></div> ${t2}</div>
-        <div class="sec-stat"><div class="sec-dot" style="background:rgba(91,196,255,0.5)"></div> ${t3}</div>
+        <div class="sec-stat"><div class="sec-dot" style="background:#76c17d"></div> ${t1}</div>
+        <div class="sec-stat"><div class="sec-dot" style="background:#b9b0ff"></div> ${t2}</div>
+        <div class="sec-stat"><div class="sec-dot" style="background:rgba(232,184,109,0.5)"></div> ${t3}</div>
       </div>`;
     grid.appendChild(cell);
   });
@@ -1146,7 +1254,7 @@ function attachCuemapTooltip() {
     }
 
     const tierLabel = ['','Major Hit','Mid Hit','Minor Onset'];
-    const tierColor = ['','#c8ff57','#ff6b35','#5bc4ff'];
+    const tierColor = ['','#76c17d','#b9b0ff','#e8b86d'];
 
     let secNum = 1;
     segments.forEach((st,i) => { if (t>=st) secNum=i+1; });
@@ -1220,73 +1328,142 @@ function exportJSON() {
 }
 
 function exportAEScript() {
-  const { tier1, tier2, tier3, MAX_STRENGTH, segments } = RESULT;
-  const allPeaks = [
-    ...tier1.map(([t,s])=>[t, Math.round((s/MAX_STRENGTH)*100), 'MAJOR']),
-    ...tier2.map(([t,s])=>[t, Math.round((s/MAX_STRENGTH)*100), 'MID']),
-    ...tier3.map(([t,s])=>[t, Math.round((s/MAX_STRENGTH)*100), 'MINOR'])
-  ].sort((a,b)=>a[0]-b[0]);
+  const { tier1, tier2, tier3, MAX_STRENGTH, segments, bpm, dur } = RESULT;
+
+  // Beat grid — generate from BPM estimate
+  const beatInterval = 60 / bpm;
+  const beats = [];
+  for (let t = 0; t < dur; t += beatInterval) beats.push(+t.toFixed(4));
+
+  // Helper: emit a block of markers onto a named null layer
+  function makeNullBlock(varName, layerName, labelColor, markerData, commentLabel) {
+    // markerData: array of { t, label }
+    const b = [];
+    b.push(`  // ── ${commentLabel} (${markerData.length} markers) ──`);
+    b.push(`  var ${varName} = comp.layers.addNull(comp.duration);`);
+    b.push(`  ${varName}.name = ${JSON.stringify(layerName)};`);
+    b.push(`  ${varName}.label = ${labelColor};`);
+    b.push(`  var ${varName}mp = ${varName}.property("ADBE Marker");`);
+    markerData.forEach(({ t, label }, i) => {
+      b.push(`  var ${varName}m${i} = new MarkerValue(${JSON.stringify(label)});`);
+      b.push(`  ${varName}mp.setValueAtTime(${t}, ${varName}m${i});`);
+    });
+    b.push(``);
+    return b;
+  }
+
+  // AE label color indices
+  // 2=Yellow, 3=Aqua, 5=Pink, 6=Lavender, 8=Peach, 9=Sea Foam, 12=Tangerine, 13=Green
+  const COLOR_SECTIONS = 2;  // Yellow
+  const COLOR_MAJOR    = 12; // Tangerine
+  const COLOR_MID      = 3;  // Aqua
+  const COLOR_MINOR    = 6;  // Lavender
+  const COLOR_BEAT     = 9;  // Sea Foam
 
   const lines = [
-    `// ─────────────────────────────────────────────`,
+    `// ─────────────────────────────────────────────────────`,
     `// Audio Cue Markers — generated by Cue Mapper`,
-    `// Source: ${FILENAME}`,
-    `// Duration: ${fmtTime(RESULT.dur, 1)}   Tempo: ~${RESULT.bpm} BPM`,
-    `// ─────────────────────────────────────────────`,
+    `// Source: ${JSON.stringify(FILENAME)}`,
+    `// Duration: ${fmtTime(dur, 1)}   Est. Tempo: ~${bpm} BPM`,
+    `// ─────────────────────────────────────────────────────`,
+    `//`,
+    `// LAYERS CREATED (bottom to top in stack):`,
+    `//   · MINOR HITS  — subtle onsets        [Lavender]`,
+    `//   ● MID HITS    — mid energy peaks      [Aqua]`,
+    `//   ▲ MAJOR HITS  — strongest hits        [Tangerine]`,
+    `//   § SECTIONS    — structural boundaries [Yellow]`,
+    `//   ♩ BEAT GRID   — BPM grid + measures   [Sea Foam]`,
+    `//`,
     `// HOW TO USE:`,
-    `//   1. Open your AE composition`,
-    `//   2. File > Scripts > Run Script File…`,
-    `//   3. Select this .jsx file`,
-    `//   A null layer "AUDIO CUES" will be created with all markers.`,
-    `// ─────────────────────────────────────────────`,
+    `//   1. Activate the composition you want to mark`,
+    `//   2. File > Scripts > Run Script File… > select this file`,
+    `//   5 null layers will be created. Solo or hide layers`,
+    `//   to work with just the cue type you need.`,
+    `//   AE snaps keyframes/in-out points to markers with Shift.`,
+    `// ─────────────────────────────────────────────────────`,
     ``,
     `(function () {`,
     `  var comp = app.project.activeItem;`,
     `  if (!(comp instanceof CompItem)) {`,
-    `    alert("Please activate a composition first.");`,
+    `    alert("Please open and activate a composition first.");`,
     `    return;`,
     `  }`,
     ``,
-    `  app.beginUndoGroup("Add Audio Cue Markers");`,
+    `  app.beginUndoGroup("Cue Mapper — Add Marker Layers");`,
     ``,
-    `  // Create null layer for markers`,
-    `  var layer = comp.layers.addNull(comp.duration);`,
-    `  layer.name = "AUDIO CUES — " + ${JSON.stringify(FILENAME)};`,
-    `  layer.label = 2; // Yellow`,
-    ``,
-    `  var mp = layer.property("ADBE Marker");`,
-    ``,
-    `  // ── Section boundaries ──`,
   ];
 
-  segments.slice(1).forEach((t, i) => {
-    lines.push(`  var s${i} = new MarkerValue("§${i+1} START  ${fmtTime(t)}");`);
-    lines.push(`  s${i}.duration = 0;`);
-    lines.push(`  mp.setValueAtTime(${t.toFixed(4)}, s${i});`);
+  // ── 1. MINOR HITS (added first = bottom of stack)
+  lines.push(...makeNullBlock(
+    'lMinor',
+    `· MINOR HITS — ${FILENAME}`,
+    COLOR_MINOR,
+    tier3.map(([t, s]) => ({ t: t.toFixed(4), label: `${fmtTime(t)}  ${Math.round((s/MAX_STRENGTH)*100)}%` })),
+    'Minor onsets'
+  ));
+
+  // ── 2. MID HITS
+  lines.push(...makeNullBlock(
+    'lMid',
+    `● MID HITS — ${FILENAME}`,
+    COLOR_MID,
+    tier2.map(([t, s]) => ({ t: t.toFixed(4), label: `${fmtTime(t)}  ${Math.round((s/MAX_STRENGTH)*100)}%` })),
+    'Mid-level hits'
+  ));
+
+  // ── 3. MAJOR HITS
+  lines.push(...makeNullBlock(
+    'lMajor',
+    `▲ MAJOR HITS — ${FILENAME}`,
+    COLOR_MAJOR,
+    tier1.map(([t, s]) => ({ t: t.toFixed(4), label: `${fmtTime(t)}  ${Math.round((s/MAX_STRENGTH)*100)}%` })),
+    'Major hits'
+  ));
+
+  // ── 4. SECTIONS
+  lines.push(...makeNullBlock(
+    'lSec',
+    `§ SECTIONS — ${FILENAME}`,
+    COLOR_SECTIONS,
+    segments.slice(1).map((t, i) => ({ t: t.toFixed(4), label: `§${i+2}  ${fmtTime(t)}` })),
+    'Structural sections'
+  ));
+
+  // ── 5. BEAT GRID (added last = top of stack)
+  const beatMarkers = beats.map((t, i) => {
+    const beatNum  = i + 1;
+    const measure  = Math.floor(i / 4) + 1;
+    const beatInBar = (i % 4) + 1;
+    const label = beatInBar === 1
+      ? `M${measure}`
+      : `${measure}.${beatInBar}`;
+    return { t: t.toFixed(4), label };
   });
 
-  lines.push(``, `  // ── Energy peaks ──`);
+  lines.push(...makeNullBlock(
+    'lBeat',
+    `♩ BEAT GRID ~${bpm}BPM — ${FILENAME}`,
+    COLOR_BEAT,
+    beatMarkers,
+    `Beat grid at ~${bpm} BPM`
+  ));
 
-  allPeaks.forEach(([t, pct, tier], i) => {
-    const label = `${tier}  ${fmtTime(t)}  ${pct}%`;
-    lines.push(`  var m${i} = new MarkerValue(${JSON.stringify(label)});`);
-    lines.push(`  mp.setValueAtTime(${t.toFixed(4)}, m${i});`);
-  });
-
+  // ── Summary alert
   lines.push(
-    ``,
     `  app.endUndoGroup();`,
     ``,
-    `  // Summary`,
-    `  var msg = "✓ Markers added to \\"" + layer.name + "\\"\\n";`,
-    `  msg += "  " + ${allPeaks.length} + " energy peaks\\n";`,
-    `  msg += "  " + ${segments.slice(1).length} + " section boundaries";`,
+    `  var msg = "✓ Cue Mapper markers added\\n\\n";`,
+    `  msg += "  ♩ Beat grid:    " + ${beats.length} + " markers\\n";`,
+    `  msg += "  § Sections:     " + ${segments.slice(1).length} + " markers\\n";`,
+    `  msg += "  ▲ Major hits:   " + ${tier1.length} + " markers\\n";`,
+    `  msg += "  ● Mid hits:     " + ${tier2.length} + " markers\\n";`,
+    `  msg += "  · Minor hits:   " + ${tier3.length} + " markers\\n";`,
     `  alert(msg);`,
     ``,
     `}());`
   );
 
-  download(lines.join('\n'), 'cue-markers.jsx', 'text/plain');
+  download(lines.join('\n'), `${FILENAME}-cue-markers.jsx`, 'text/plain');
 }
 
 function download(content, filename, mime) {
@@ -1300,9 +1477,9 @@ function download(content, filename, mime) {
 // ─────────────────────────────────────────────
 // UI State Machine
 // ─────────────────────────────────────────────
-function showUpload()   { document.getElementById('upload-zone').style.display=''; document.getElementById('progress-zone').style.display='none'; document.getElementById('results-zone').style.display='none'; }
-function showProgress() { document.getElementById('upload-zone').style.display='none'; document.getElementById('progress-zone').style.display=''; document.getElementById('results-zone').style.display='none'; }
-function showResults()  { document.getElementById('upload-zone').style.display='none'; document.getElementById('progress-zone').style.display='none'; document.getElementById('results-zone').style.display=''; }
+function showUpload()   { document.getElementById('upload-zone').style.display='block'; document.getElementById('progress-zone').style.display='none'; document.getElementById('results-zone').style.display='none'; }
+function showProgress() { document.getElementById('upload-zone').style.display='none'; document.getElementById('progress-zone').style.display='block'; document.getElementById('results-zone').style.display='none'; }
+function showResults()  { document.getElementById('upload-zone').style.display='none'; document.getElementById('progress-zone').style.display='none'; document.getElementById('results-zone').style.display='block'; }
 
 function setProgress(pct) {
   document.getElementById('prog-bar').style.width = pct + '%';
@@ -1313,7 +1490,6 @@ function showError(msg) {
   const el = document.getElementById('error-msg');
   el.textContent = '⚠ ' + msg;
   el.style.display = 'block';
-  dbg('ERROR: ' + msg);
 }
 function clearError() {
   document.getElementById('error-msg').style.display = 'none';
@@ -1347,20 +1523,18 @@ async function handleFile(file) {
   setProgress(0);
 
   clearError();
-  dbg('File accepted: ' + file.name + ' (' + (file.size/1024).toFixed(0) + 'KB, type="' + file.type + '")');
 
   // Give browser a frame to repaint before blocking work starts
   await new Promise(r => requestAnimationFrame(() => setTimeout(r, 80)));
 
   try {
     setProgress(2);
-    dbg('Reading file buffer...');
     const buffer = await file.arrayBuffer();
-    dbg('Buffer read (' + buffer.byteLength + ' bytes). Starting audio decode...');
     setProgress(5);
-    RESULT = await analyze(buffer, pct => { setProgress(pct); if (Math.round(pct) % 20 === 0) dbg('Analysis ' + Math.round(pct) + '%...'); });
-    dbg('Analysis complete. Rendering results...');
+    RESULT = await analyze(buffer, pct => { setProgress(pct); });
     showResults();
+    // Wait one frame for the browser to reflow before reading clientWidth in canvas setup
+    await new Promise(r => requestAnimationFrame(r));
     renderResults();
     // Report height to Cargo iframe parent
     setTimeout(() => {
@@ -1385,17 +1559,15 @@ zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') 
 
 input.addEventListener('change', () => { 
   const f = input.files[0];
-  dbg('File selected via input: ' + (f ? f.name : 'none'));
-  if (f) handleFile(f); 
+  if (f) handleFile(f);
 });
 
-zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); dbg('Drag over zone...'); });
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
 zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
 zone.addEventListener('drop', e => {
   e.preventDefault();
   zone.classList.remove('drag-over');
   const f = e.dataTransfer.files[0];
-  dbg('File dropped: ' + (f ? f.name : 'none'));
   handleFile(f);
 });
 
@@ -1410,9 +1582,6 @@ window.addEventListener('resize', () => {
 
 // Initial Cargo height
 window.parent.postMessage({ type: 'resize', height: 360 }, '*');
-
-// Startup check
-dbg('CueMapper ready. Web Audio API: ' + !!(window.AudioContext || window.webkitAudioContext) + ' | FileReader: ' + !!window.FileReader);
 </script>
 </body>
 </html>
